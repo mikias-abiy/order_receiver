@@ -1,2 +1,6 @@
-.venv
+.swp
+.env
 dev
+__pycache__
+media
+.venv
