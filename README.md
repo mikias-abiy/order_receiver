@@ -43,15 +43,27 @@ python3 main.py
 Coming soon.
 
 ## 4.0 LIst of Commands
+<br>
 
 ### 4.1 User Commands
-`Items`: Sends items with there pictures and prices.
-`Order`: Starts the chain of methods that prompot the user to enter the information about their order.
-`Language`: Lets the user choose language currenty the only available languages are Amharich and English.
-`About`: Sends information about the bot and the developer of the bot.
-`My Order`: Sends the details of order the user ordered if they have one previously.
+
+<br>
+
+`Items`: Sends items with there pictures and prices.<br>
+`Order`: Starts the chain of methods that prompot the user to enter the information about their order.<br>
+`Language`: Lets the user choose language currenty the only available languages are Amharich and English.<br>
+`About`: Sends information about the bot and the developer of the bot.<br>
+`My Order`: Sends the details of order the user ordered if they have one previously.<br>
+
+<br>
+<br>
 
 ### 4.2 Admin Commands
+
+<br>
+
 `/all`: Sends all the registered orderes to the admin.
+
+<br>
 
 ### Thankyou for vistitng.
