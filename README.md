@@ -2,7 +2,7 @@
 
 ## 1.0 Description
 
-This a simple telegram bot that automates the hustle of regestering orders manualy by showing available items and letting user register their orders by giving them a serious of prompots. Even though the prompots are specific to the items that I was selling at the time I built this project you can tweak it a little to make it meat your needs. Don't hesatet to do so because it's well documented and organized. Checkout the [dive deep into the inner working of the bot](#how-it-works).
+This a simple telegram bot that automates the hustle of regestering orders manualy by showing available items and letting user register their orders by giving them a series of prompots. Even though the prompots are specific to the items that I was selling at the time I built this project you can tweak it a little to make it meat your needs. Don't hesatet to do so because it's well documented and organized. Checkout the [dive deep into the inner working of the bot](#how-it-works).
 
 ## 2.0 Installation
 
@@ -43,11 +43,8 @@ python3 main.py
 Coming soon.
 
 ## 4.0 LIst of Commands
-<br>
 
 ### 4.1 User Commands
-
-<br>
 
 `Items`: Sends items with there pictures and prices.<br>
 `Order`: Starts the chain of methods that prompot the user to enter the information about their order.<br>
@@ -55,15 +52,8 @@ Coming soon.
 `About`: Sends information about the bot and the developer of the bot.<br>
 `My Order`: Sends the details of order the user ordered if they have one previously.<br>
 
-<br>
-<br>
-
 ### 4.2 Admin Commands
 
-<br>
-
 `/all`: Sends all the registered orderes to the admin.
-
-<br>
 
 ### Thankyou for vistitng.
