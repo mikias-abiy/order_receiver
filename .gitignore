@@ -2,6 +2,5 @@
 .env
 dev
 __pycache__
-media
 .venv
 storage.json
