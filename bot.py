@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from models.bot import Bot
+from telebot import TeleBot
 from config import BOT_API_TOKEN
 
-bot = Bot(BOT_API_TOKEN)
+bot = TeleBot(BOT_API_TOKEN)

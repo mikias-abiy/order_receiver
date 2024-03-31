@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Telegram bot API module imports
+# Telegram telebot API module imports
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InputFile,\
     InputMediaPhoto
@@ -9,7 +9,7 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InputFile,\
 from bot import bot
 from texts import AM, EN
 from models import storage
-from models import order_manager
+from models import order_manager, user_setting_manager as usm
 from helpers import items_name_list
 from config import OWNER_USER_ID
 
@@ -21,16 +21,19 @@ from config import OWNER_USER_ID
                      ])
 def cmd_start(message):
     """
-    cmd_start: starts the bot and sends the set of keyboards to communicate
-               with the bot.
+    cmd_start: starts the usm.and sends the set of keyboards to communicate
+               with the usm.
 
     Args:
         message (Message: obj): The message object send from the user
     """
+    if not usm.get(message.from_user.id):
+        usm.create_setting(message.from_user.id)
+        usm.set_language(message.from_user.id, usm.AMHARIC)
+    
+    usm.set_level(message.from_user.id, usm.TOP_LEVEL)
 
-    bot.level = bot.TOP_LEVEL
-
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     keys = texts['start_keys']
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -52,16 +55,16 @@ def cmd_start(message):
 # Done
 @bot.message_handler(func=lambda message:
                      message.text == 'ስለ መተግበሪያው' or message.text == 'About'
-                     and bot.level == bot.TOP_LEVEL)
+                     and usm.get(message.from_user.id).level == usm.TOP_LEVEL)
 def cmd_about(message):
     """
-    cmd_about: sends a description about the bot and the builder of the bot.
+    cmd_about: sends a description about the usm.and the builder of the usm.
 
     Args:
         message (Message: obj): The message object send from the user
     """
 
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
 
     bot.send_message(message.chat.id, texts['about'])
 
@@ -69,7 +72,7 @@ def cmd_about(message):
 # Done
 @bot.message_handler(func=lambda message:
                      message.text == 'Language' or message.text == 'ቋንቋ'
-                     and bot.level == bot.TOP_LEVEL)
+                     and usm.get(message.from_user.id).level == usm.TOP_LEVEL)
 def cmd_language(message):
     """
     cmd_language: sends the available language options as a keyboard.
@@ -78,7 +81,7 @@ def cmd_language(message):
         message (Message: obj): The message object send from the user
     """
 
-    bot.level = bot.LANGUAGE_LEVEL
+    usm.get(message.from_user.id).level = usm.get(message.from_user.id).language_LEVEL
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(KeyboardButton('አማርኛ'), KeyboardButton('English'))
@@ -89,7 +92,7 @@ def cmd_language(message):
 # Done
 @bot.message_handler(func=lambda message:
                      message.text == 'አማርኛ' or message.text == 'English'
-                     and bot.level == bot.LANGUAGE_LEVEL)
+                     and usm.get(message.from_user.id).level == usm.get(message.from_user.id).language_LEVEL)
 def cmd_change_language(message):
     """
     cmd_change_language: sets the language the user choose.
@@ -98,14 +101,14 @@ def cmd_change_language(message):
         message (Message: obj): The message object send from the user
     """
 
-    bot.language = bot.AMHARIC if message.text == 'አማርኛ' else bot.ENGLISH
+    usm.get(message.from_user.id).language = usm.AMHARIC if message.text == 'አማርኛ' else usm.ENGLISH
     cmd_start(message)
 
 
 # Done
 @bot.message_handler(func=lambda message:
                      message.text == 'ዕቃዎች' or message.text == 'Items'
-                     and bot.level == bot.TOP_LEVEL)
+                     and usm.get(message.from_user.id).level == usm.TOP_LEVEL)
 def cmd_items(message):
     """
     cmd_items: sends the availabe items to order from with pictures,
@@ -115,8 +118,8 @@ def cmd_items(message):
         message (Message: obj): The message object send from the user
     """
 
-    lang_key = 'am' if bot.language == bot.AMHARIC else 'en'
-    texts = AM if bot.language == bot.AMHARIC else EN
+    lang_key = 'am' if usm.get(message.from_user.id).language == usm.AMHARIC else 'en'
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
 
     objects = storage.all()
     items = []
@@ -143,7 +146,7 @@ def cmd_items(message):
 
 @bot.message_handler(func=lambda message:
                      message.text == 'ትዕዛዝ' or message.text == 'Order'
-                     and bot.level == bot.TOP_LEVEL)
+                     and usm.get(message.from_user.id).level == usm.TOP_LEVEL)
 def cmd_order(message):
     """
     cmd_order: starts the ordering cycle of prompots.
@@ -151,12 +154,12 @@ def cmd_order(message):
     Args:
         message (Message: obj): The message object send from the user
     """
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     if order_manager.get(message.from_user.id) is not None:
         bot.send_message(message.chat.id, texts['previous_order'])
         return
 
-    bot.level = bot.ORDERER_NAME_LEVEL
+    usm.get(message.from_user.id).level = usm.ORDERER_NAME_LEVEL
 
     prompot = texts['order_prompots']['orderer_name']
 
@@ -168,7 +171,7 @@ def cmd_order(message):
 
 @bot.message_handler(func=lambda message:
                      message.text not in ['cancle', 'ያቋርጡ'] and
-                     bot.level == bot.ORDERER_NAME_LEVEL)
+                     usm.get(message.from_user.id).level == usm.ORDERER_NAME_LEVEL)
 def cmd_set_name(message):
     """
     cmd_set_name: sets the name of the orderer to the order object.
@@ -177,7 +180,7 @@ def cmd_set_name(message):
         message (Message: obj): The message object send from the user
     """
 
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     prompot = texts['order_prompots']['orderer_phone'][0]
     key = texts['order_prompots']['orderer_phone'][1]
 
@@ -185,7 +188,7 @@ def cmd_set_name(message):
 
     order_manager.set_orderer_name(message.from_user.id, message.text)
 
-    bot.level = bot.ORDERER_PHONE_LEVEL
+    usm.get(message.from_user.id).level = usm.ORDERER_PHONE_LEVEL
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(KeyboardButton(key, request_contact=True))
@@ -195,7 +198,7 @@ def cmd_set_name(message):
 
 
 # Done
-@bot.message_handler(func=lambda message: bot.level == bot.ORDERER_PHONE_LEVEL,
+@bot.message_handler(func=lambda message: usm.get(message.from_user.id).level == usm.ORDERER_PHONE_LEVEL,
                      content_types=['contact'])
 def cmd_set_phone(message):
     """
@@ -204,16 +207,16 @@ def cmd_set_phone(message):
     Args:
         message (Message: obj): The message object send from the user
     """
-    if bot.level != bot.ORDERER_PHONE_LEVEL:
+    if usm.get(message.from_user.id).level != usm.ORDERER_PHONE_LEVEL:
         return
 
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     prompot = texts['order_prompots']['orderer_address']
 
     order_manager.set_orderer_phone(message.from_user.id,
                                     message.contact.phone_number)
 
-    bot.level = bot.ORDERER_ADDRESS_LEVEL
+    usm.get(message.from_user.id).level = usm.ORDERER_ADDRESS_LEVEL
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(KeyboardButton(f'{texts["cancle"]}'))
@@ -224,9 +227,9 @@ def cmd_set_phone(message):
 # Done
 @bot.message_handler(func=lambda message:
                      (message.text not in ['cancle', 'ያቋርጡ'] and
-                      bot.level == bot.ORDERER_ADDRESS_LEVEL) or
+                      usm.get(message.from_user.id).level == usm.ORDERER_ADDRESS_LEVEL) or
                      (message.text in [AM['add_order'], EN['add_order']]
-                      and bot.level == bot.ORDERER_ITEM_AMOUNT_LEVEL))
+                      and usm.get(message.from_user.id).level == usm.ORDERER_ITEM_AMOUNT_LEVEL))
 def cmd_set_address(message):
     """
     cmd_set_address: sets the address of the orderer to the order object.
@@ -235,14 +238,14 @@ def cmd_set_address(message):
         message (Message: obj): The message object send from the user
     """
 
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     prompot = texts['order_prompots']['item_name']
-    lang_key = 'am' if bot.language == bot.AMHARIC else 'en'
+    lang_key = 'am' if usm.get(message.from_user.id).language == usm.AMHARIC else 'en'
 
     if message.text not in [AM['add_order'], EN['add_order']]:
         order_manager.set_orderer_address(message.from_user.id, message.text)
 
-    bot.level = bot.ORDERER_ITEM_NAME_LEVEL
+    usm.get(message.from_user.id).level = usm.ORDERER_ITEM_NAME_LEVEL
 
     objects = storage.all()
     items = []
@@ -266,7 +269,7 @@ def cmd_set_address(message):
 # Done
 @bot.message_handler(func=lambda message:
                      message.text in items_name_list() and
-                     bot.level == bot.ORDERER_ITEM_NAME_LEVEL)
+                     usm.get(message.from_user.id).level == usm.ORDERER_ITEM_NAME_LEVEL)
 def cmd_set_item_name(message):
     """
     cmd_set_item_name: sets the name of the item the orderer ordered
@@ -275,13 +278,13 @@ def cmd_set_item_name(message):
     Args:
         message (Message: obj): The message object send from the user
     """
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     prompot = texts['order_prompots']['item_color']
     keys = texts['colors']
 
     order_manager.add_item(message.from_user.id, message.text)
 
-    bot.level = bot.ORDERER_ITEM_COLOR_LEVEL
+    usm.get(message.from_user.id).level = usm.ORDERER_ITEM_COLOR_LEVEL
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     for key in keys:
@@ -294,7 +297,7 @@ def cmd_set_item_name(message):
 # Done
 @bot.message_handler(func=lambda message:
                      message.text in AM['colors'] + EN['colors'] and
-                     bot.level == bot.ORDERER_ITEM_COLOR_LEVEL)
+                     usm.get(message.from_user.id).level == usm.ORDERER_ITEM_COLOR_LEVEL)
 def cmd_set_item_color(message):
     """
     cmd_set_item_color: sets the color of the item the orderer ordered
@@ -303,12 +306,12 @@ def cmd_set_item_color(message):
     Args:
         message (Message: obj): The message object send from the user
     """
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     prompot = texts['order_prompots']['item_amount']
 
     order_manager.set_item_color(message.from_user.id, message.text)
 
-    bot.level = bot.ORDERER_ITEM_AMOUNT_LEVEL
+    usm.get(message.from_user.id).level = usm.ORDERER_ITEM_AMOUNT_LEVEL
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(KeyboardButton(f'{texts["cancle"]}'))
@@ -319,7 +322,7 @@ def cmd_set_item_color(message):
 # Done
 @bot.message_handler(func=lambda message:
                      message.text.isdigit() and
-                     bot.level == bot.ORDERER_ITEM_AMOUNT_LEVEL)
+                     usm.get(message.from_user.id).level == usm.ORDERER_ITEM_AMOUNT_LEVEL)
 def cmd_set_item_amount(message):
     """
     cmd_set_item_amount: sets the amount of the item the orderer ordered
@@ -328,7 +331,7 @@ def cmd_set_item_amount(message):
     Args:
         message (Message: obj): The message object send from the user
     """
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     prompot = texts['order_prompots']['item_last']
 
     order_manager.set_item_amount(message.from_user.id, message.text)
@@ -343,15 +346,15 @@ def cmd_set_item_amount(message):
 
 @bot.message_handler(func=lambda message:
                      message.text in [EN['start_keys'][2], AM['start_keys'][2]] and
-                     bot.level == bot.TOP_LEVEL)
+                     usm.get(message.from_user.id).level == usm.TOP_LEVEL)
 def cmd_my_order(message):
     """
     cmd_my_order: sends the order of the user that is currently
-                  communicating the bot (if the user have any order).
+                  communicating the usm.(if the user have any order).
     Args:
         message (Message: obj): The message object send from the user
     """
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     
     order = order_manager.get(message.from_user.id)
 
@@ -371,7 +374,7 @@ def cmd_my_order(message):
         
 # Done
 @bot.message_handler(commands=['all'],
-                     func=lambda message: bot.level == bot.TOP_LEVEL)
+                     func=lambda message: usm.get(message.from_user.id).level == usm.TOP_LEVEL)
 def cmd_all_order(message):
     """
     cmd_all_order: sends all orders back. (Admin only)
@@ -381,7 +384,7 @@ def cmd_all_order(message):
     """
     if message.from_user.id != OWNER_USER_ID:
         return
-    texts = AM if bot.language == bot.AMHARIC else EN
+    texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
     orders = [value for value in order_manager.orders().values()]
 
     print(orders)
