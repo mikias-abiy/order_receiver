@@ -119,7 +119,7 @@ class OrderManager:
         if user_id in self.__orders.keys():
             return (self.__orders[user_id])
         else:
-            return (0)
+            return (None)
 
     def remove(self, user_id):
         """
