@@ -90,11 +90,11 @@ class FileStorage:
             Reloads the objects from the last saved file that
             that contains the json representation of the objects.
         """
-        from models.base_model import BaseModel
         from models.order import Order
         from models.item import Item
+        from models.setting import Setting
 
-        classes = {"Order": Order, "Item": Item}
+        classes = {"Order": Order, "Item": Item, "Setting": Setting}
         try:
             with open(FileStorage.__file_path, 'r') as file:
                 _raw = json.load(file)
