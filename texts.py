@@ -8,7 +8,7 @@ AM = {
 
  ይህ ቦት የተዘጋጀው በእቃዎች ክፍል ውስጥ የተዘረዘሩትን ዕቃዎች ትዕዛዝ ለመቀበል፣፣ ለማስተካከል፣ ለማጥፋት ነው።
 
- በአሃተን ሶፍትዌር ሶሉሽንስ የተገነቡ
+ ለንግድዎ እንዲህ ያለ ቦት ከፈለጉ በዚህ አድራሻ ሊያገኙን ይችላሉ: @mikiasab
 ''',
     'items_caption': ['ስም', 'ዋጋ'],
     'order_prompots': {
@@ -53,7 +53,7 @@ Order Receiver Telegram Bot
 This bot was specifically designed to receive, take, edit, delete \
 orders of items that are list in the items section.
 
-built by Ahaten Software Solutions
+If you want such bot for your business feel free to contact us here: @mikiasab
 """,
     'items_caption': ['Name', 'Price'],
     'order_prompots': {

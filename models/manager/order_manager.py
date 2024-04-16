@@ -27,9 +27,8 @@ class OrderManager:
         Args:
             user_id (int): The telegram id of the user.
         """
-        from models.order import Order
+        from models.db_models.order import Order
         self.__orders[user_id] = Order(user_id=user_id)
-        self.__orders[user_id].save()
 
     def set_orderer_name(self, user_id, name):
         """
@@ -136,7 +135,7 @@ class OrderManager:
         """
         from models import storage
 
-        orders = storage.all(types=['Order'])
+        orders = storage.get('Order')
 
-        for order in orders.values():
+        for order in orders:
             self.__orders[order.user_id] = order

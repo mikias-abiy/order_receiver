@@ -39,9 +39,8 @@ class UserSettingManager:
         Args:
             user_id (int): The telegram id of the user.
         """
-        from models.setting import Setting
+        from models.db_models.setting import Setting
         self.__settings[user_id] = Setting(user_id=user_id)
-        self.__settings[user_id].save()
 
     def set_level(self, user_id, level):
         """
@@ -102,7 +101,7 @@ class UserSettingManager:
         """
         from models import storage
 
-        settings = storage.all(types=['Setting'])
+        settings = storage.get('Setting')
 
-        for setting in settings.values():
+        for setting in settings:
             self.__settings[setting.user_id] = setting

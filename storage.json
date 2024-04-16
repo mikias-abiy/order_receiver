@@ -1,1 +1,53 @@
-{"Item.2fa8203e-cc45-498f-a087-b92b9238b051": {"id": "2fa8203e-cc45-498f-a087-b92b9238b051", "created_at": "2024-02-18T18:39:06.576487", "updated_at": "2024-02-18T18:39:06.576513", "name": {"am": "\u12a0\u12ed\u1290\u1275-\u1369", "en": "Type-1"}, "price": 200, "medias": ["media/type-1-black_and_white.jpg", "media/type-1-black.jpg", "media/type-1-dark_green_and_golden.jpg", "media/type-1-golden.jpg", "media/type-1-gray_and_white.jpg", "media/type-1-light_blue_and_golden.jpg", "media/type-1-light_green.jpg", "media/type-1-silver.jpg", "media/type-1-white.jpg"], "__class__": "Item"}, "Item.3d5db837-2691-4f11-918d-417bf2f7bc42": {"id": "3d5db837-2691-4f11-918d-417bf2f7bc42", "created_at": "2024-02-18T18:39:06.579119", "updated_at": "2024-02-18T18:39:06.579135", "name": {"am": "\u12a0\u12ed\u1290\u1275-\u136b", "en": "Type-3"}, "price": 300, "medias": ["media/type-3-black_and_white.jpg"], "__class__": "Item"}, "Item.e8a5fb6a-b019-46c6-b8d2-387d5699f199": {"id": "e8a5fb6a-b019-46c6-b8d2-387d5699f199", "created_at": "2024-02-18T18:39:06.579438", "updated_at": "2024-02-18T18:39:06.579448", "name": {"am": "\u12a0\u12ed\u1290\u1275-\u136c", "en": "Type-3"}, "price": 150, "medias": ["media/type-4-white.jpg", "media/type-4-white-removed.jpg"], "__class__": "Item"}}
+{
+    "Item.2fa8203e-cc45-498f-a087-b92b9238b051": {
+        "id": "2fa8203e-cc45-498f-a087-b92b9238b051",
+        "created_at": "2024-02-18T18:39:06.576487",
+        "updated_at": "2024-02-18T18:39:06.576513",
+        "name": {
+            "am": "\u12a0\u12ed\u1290\u1275-\u1369",
+            "en": "Type-1"
+        },
+        "price": 200,
+        "medias": [
+            "media/type-1-black_and_white.jpg",
+            "media/type-1-black.jpg",
+            "media/type-1-dark_green_and_golden.jpg",
+            "media/type-1-golden.jpg",
+            "media/type-1-gray_and_white.jpg",
+            "media/type-1-light_blue_and_golden.jpg",
+            "media/type-1-light_green.jpg",
+            "media/type-1-silver.jpg",
+            "media/type-1-white.jpg"
+        ],
+        "__class__": "Item"
+    }, 
+    "Item.3d5db837-2691-4f11-918d-417bf2f7bc42": {
+        "id": "3d5db837-2691-4f11-918d-417bf2f7bc42",
+        "created_at": "2024-02-18T18:39:06.579119",
+        "updated_at": "2024-02-18T18:39:06.579135",
+        "name": {
+            "am": "\u12a0\u12ed\u1290\u1275-\u136a",
+            "en": "Type-2"
+        },
+        "price": 300,
+        "medias": [
+            "media/type-3-black_and_white.jpg"
+        ],
+        "__class__": "Item"
+        },
+        "Item.e8a5fb6a-b019-46c6-b8d2-387d5699f199": {
+            "id": "e8a5fb6a-b019-46c6-b8d2-387d5699f199",
+            "created_at": "2024-02-18T18:39:06.579438",
+            "updated_at": "2024-02-18T18:39:06.579448",
+            "name": {
+                "am": "\u12a0\u12ed\u1290\u1275-\u136b",
+                "en": "Type-3"
+            },
+            "price": 150,
+            "medias": [
+                "media/type-4-white.jpg",
+                "media/type-4-white-removed.jpg"
+            ],
+            "__class__": "Item"
+        }
+    }

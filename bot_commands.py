@@ -4,6 +4,7 @@
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InputFile,\
     InputMediaPhoto
+from telebot import types
 
 # Local modules imports
 from bot import bot
@@ -41,7 +42,7 @@ def cmd_start(message):
     markup.row(KeyboardButton(keys[1]), KeyboardButton(keys[2]))
     markup.row(KeyboardButton(keys[3]), KeyboardButton(keys[4]))
 
-    if message.text in [AM['cancle'], EN['cancle']]:
+    if message.text in [AM['cancle'], EN['cancle']] and order_manager.get(message.from_user.id):
         storage.remove(order_manager.get(message.from_user.id))
         order_manager.remove(message.from_user.id)
     elif message.text in [AM['done'], EN['done']]:
@@ -81,7 +82,7 @@ def cmd_language(message):
         message (Message: obj): The message object send from the user
     """
 
-    usm.get(message.from_user.id).level = usm.get(message.from_user.id).language_LEVEL
+    usm.get(message.from_user.id).level = usm.LANGUAGE_LEVEL
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(KeyboardButton('አማርኛ'), KeyboardButton('English'))
@@ -92,7 +93,7 @@ def cmd_language(message):
 # Done
 @bot.message_handler(func=lambda message:
                      message.text == 'አማርኛ' or message.text == 'English'
-                     and usm.get(message.from_user.id).level == usm.get(message.from_user.id).language_LEVEL)
+                     and usm.get(message.from_user.id).level == usm.LANGUAGE_LEVEL)
 def cmd_change_language(message):
     """
     cmd_change_language: sets the language the user choose.
@@ -121,12 +122,7 @@ def cmd_items(message):
     lang_key = 'am' if usm.get(message.from_user.id).language == usm.AMHARIC else 'en'
     texts = AM if usm.get(message.from_user.id).language == usm.AMHARIC else EN
 
-    objects = storage.all()
-    items = []
-
-    for key, value in objects.items():
-        if 'Item' in key:
-            items.append(value)
+    items = storage.get('Item')
 
     for item in items:
         medias = []
@@ -247,12 +243,11 @@ def cmd_set_address(message):
 
     usm.get(message.from_user.id).level = usm.ORDERER_ITEM_NAME_LEVEL
 
-    objects = storage.all()
+    items_r_set = storage.get('Item')
+    
     items = []
-
-    for key, value in objects.items():
-        if 'Item' in key:
-            items.append(value)
+    for item in items_r_set:
+        items.append(item)
 
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     for i in range(0, len(items) // 2, 2):
@@ -361,6 +356,10 @@ def cmd_my_order(message):
     if not order:
         bot.send_message(message.chat.id, texts['no_previous_order'])
     else:
+        markup = types.InlineKeyboardMarkup()
+        markup.add(
+            types.InlineKeyboardButton('Delete', callback_data=f'{message.from_user.id}_order_delete')
+        )
         msg = f"""\
 {texts['orders'][0]}: {order.name}
 {texts['orders'][1]}: {order.phone}
@@ -370,8 +369,26 @@ def cmd_my_order(message):
 """
         for i in range(len(order.items)):
             msg += f"   {i + 1}. {order.items[i]}\n"
-        bot.send_message(message.chat.id, msg)
-        
+        bot.send_message(message.chat.id, msg, reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call:
+                     call.data.endswith('_order_delete'))
+def callback_order_delete(call):
+    """
+    """
+    user_id = int(call.data.split('_')[0])
+
+    order = order_manager.get(user_id)
+
+    print(order)
+
+    storage.remove(order)
+    order_manager.remove(user_id)
+
+    bot.edit_message_text(
+        "Your order is successfully delete. If you want to order again. You can start here /start.",
+        call.message.chat.id, call.message.id
+        )
 # Done
 @bot.message_handler(commands=['all'],
                      func=lambda message: usm.get(message.from_user.id).level == usm.TOP_LEVEL)

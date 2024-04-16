@@ -3,12 +3,11 @@
 from dotenv  import load_dotenv
 
 
-from models.engine import file_storage as fs
+from models.engine import db_storage as ds
 from models.manager import order_manager as om
 from models.manager import user_setting_manager as usm
 
-storage = fs.FileStorage()
-storage.reload()
+storage = ds.DBStorage()
 
 order_manager = om.OrderManager()
 order_manager.reload()
