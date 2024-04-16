@@ -36,12 +36,16 @@ class DBStorage:
         # sqlite database uri.
         # db_url = f'sqlite:{db_name}.db'
 
-        database = create_database(db_url)
-        self.__store = Store(database=database)
+        self.database = create_database(db_url)
+        self.__store = Store(database=self.database)
     
     @property
     def store(self):
         return self.__store
+    
+    def connect(self):
+        db = self.__store.get_database()
+        db.connect()
 
     def new(self, obj):
         """
@@ -54,6 +58,7 @@ class DBStorage:
         Return:
             None.
         """
+        self.connect
         self.__store.add(obj)
         self.save()
 
@@ -68,6 +73,7 @@ class DBStorage:
         Return:
             None.
         """
+        self.connect
         self.__store.remove(obj)
         self.save()
 
@@ -84,6 +90,7 @@ class DBStorage:
         self.__store.commit()
     
     def get(self, cls):
+        self.connect()
         from models.db_models.order import Order
         from models.db_models.item import Item
         from models.db_models.setting import Setting
